@@ -7,6 +7,8 @@
     <title>Créneaux</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/script.js"></script>
 
 <body>
     <section id="page-creneaux" style="padding-top:1rem;">
