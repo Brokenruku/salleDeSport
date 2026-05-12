@@ -17,7 +17,7 @@
             <a href="#" class="brand">Fit<span>Space</span></a>
             <div class="nav-links">
                 <a href="#page-dashboard-client">Mon espace</a>
-                <a href="#">Déconnexion</a>
+                <a href="/logout">Déconnexion</a>
             </div>
         </nav>
 
