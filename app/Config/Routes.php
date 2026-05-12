@@ -6,3 +6,4 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/index', 'IndexController::index');
+$routes->get('/creneaux', 'CreneauxController::index');
