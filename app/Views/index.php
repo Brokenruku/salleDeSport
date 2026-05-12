@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
+    <title>FitSpace - Réservation de créneaux</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<script src="/js/bootstrap.bundle.min.js"></script>
-<script src="/js/script.js"></script>
 
 <body>
 
@@ -18,10 +17,10 @@
         <nav class="nav-public">
             <a href="#" class="brand">Fit<span>Space</span></a>
             <div class="nav-links">
-                <a href="#">Nos créneaux</a>
+                <a href="/creneaux">Nos créneaux</a>
                 <a href="#">Tarifs</a>
-                <a href="#page-login">Connexion</a>
-                <a href="#page-inscription" class="btn-nav-primary">S'inscrire</a>
+                <a href="/login" class="btn-nav-primary">Connexion</a>
+                <a href="/inscription" class="btn-nav-primary">S'inscrire</a>
             </div>
         </nav>
 
@@ -31,32 +30,35 @@
             <h1>Votre espace bien-être,<br><em>réservé en 30 secondes.</em></h1>
             <p>Cours collectifs, salles et terrains disponibles 7j/7. Créez un compte gratuit et réservez votre prochain créneau.</p>
             <div class="hero-ctas">
-                <a href="#page-creneaux" class="btn-hero btn-hero-primary">Voir les créneaux disponibles</a>
-                <a href="#page-inscription" class="btn-hero btn-hero-outline">Créer mon compte</a>
+                <a href="/creneaux" class="btn-hero btn-hero-primary">Voir les créneaux disponibles</a>
+                <a href="/inscription" class="btn-hero btn-hero-outline">Créer mon compte</a>
             </div>
         </div>
 
-        <!-- STATS -->
+        <!-- STATS DYNAMIQUES -->
         <div class="stats-band">
             <div class="stat-item">
-                <div class="num">12</div>
+                <div class="num"><?= $total_creneaux_semaine ?></div>
                 <div class="lbl">Créneaux / semaine</div>
             </div>
             <div class="stat-item">
-                <div class="num">3</div>
+                <div class="num"><?= $total_types_ressources ?></div>
                 <div class="lbl">Types de ressources</div>
             </div>
             <div class="stat-item">
-                <div class="num">48h</div>
+                <div class="num"><?= $delai_annulation ?></div>
                 <div class="lbl">Délai d'annulation</div>
             </div>
             <div class="stat-item">
-                <div class="num">100%</div>
+                <div class="num"><?= $gratuit ?></div>
                 <div class="lbl">Gratuit à l'inscription</div>
             </div>
         </div>
 
     </section>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
