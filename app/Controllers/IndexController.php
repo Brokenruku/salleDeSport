@@ -12,14 +12,19 @@ class IndexController extends BaseController
         $ressourceModel = new RessourceModel();
         $creneauModel = new CreneauModel();
         
-        // Récupérer les statistiques dynamiques
+        // Récupérer les données
+        $total_creneaux_semaine = $creneauModel->countCreneauxSemaine();
+        $total_types_ressources = $ressourceModel->distinct()->select('type')->countAllResults();
+        
+        // Passer les données à la vue
         $data = [
-            'total_creneaux_semaine' => $creneauModel->countCreneauxSemaine(),
-            'total_types_ressources' => $ressourceModel->distinct()->select('type')->countAllResults(),
-            'delai_annulation' => '48h', // Valeur fixe ou venant de config
-            'gratuit' => '100%' // Valeur fixe
+            'total_creneaux_semaine' => $total_creneaux_semaine,
+            'total_types_ressources' => $total_types_ressources,
+            'delai_annulation' => '48h',
+            'gratuit' => '100%'
         ];
         
+        // Retourner la vue avec les données
         return view('index', $data);
     }
 }
