@@ -26,11 +26,11 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
+        'hostname'     => '',
         'username'     => '',
         'password'     => '',
-        'database'     => '',
-        'DBDriver'     => 'MySQLi',
+        'database'     => WRITEPATH . '4064_4078.db',
+        'DBDriver'     => 'SQLite3',
         'DBPrefix'     => '',
         'pConnect'     => false,
         'DBDebug'      => true,
