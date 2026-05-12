@@ -20,7 +20,7 @@
                 <a href="/creneaux">Nos créneaux</a>
                 <a href="#">Tarifs</a>
                 <a href="/login" class="btn-nav-primary">Connexion</a>
-                <a href="/inscription" class="btn-nav-primary">S'inscrire</a>
+                <a href="/register" class="btn-nav-primary">S'inscrire</a>
             </div>
         </nav>
 
@@ -31,7 +31,7 @@
             <p>Cours collectifs, salles et terrains disponibles 7j/7. Créez un compte gratuit et réservez votre prochain créneau.</p>
             <div class="hero-ctas">
                 <a href="/creneaux" class="btn-hero btn-hero-primary">Voir les créneaux disponibles</a>
-                <a href="/inscription" class="btn-hero btn-hero-outline">Créer mon compte</a>
+                <a href="/register" class="btn-hero btn-hero-outline">Créer mon compte</a>
             </div>
         </div>
 
@@ -51,7 +51,7 @@
             </div>
             <div class="stat-item">
                 <div class="num"><?= $gratuit ?? '100%' ?></div>
-                <div class="lbl">Gratuit à l'inscription</div>
+                <div class="lbl">Gratuit à l'register</div>
             </div>
         </div>
 
