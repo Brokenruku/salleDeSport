@@ -14,7 +14,7 @@ class IndexController extends BaseController
         
         // Récupérer les données
         $total_creneaux_semaine = $creneauModel->countCreneauxSemaine();
-        $total_types_ressources = $ressourceModel->distinct()->select('type')->countAllResults();
+        $total_types_ressources = $ressourceModel->getTypeCount();
         
         // Passer les données à la vue
         $data = [
