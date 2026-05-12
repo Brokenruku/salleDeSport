@@ -10,7 +10,6 @@ class CreneauModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = ['ressource_id', 'date_debut', 'date_fin', 'places_dispo', 'actif'];
     
-    // Compter les créneaux actifs de la semaine
     public function countCreneauxSemaine()
     {
         return $this->where('actif', 1)
