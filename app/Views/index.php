@@ -17,7 +17,7 @@
         <nav class="nav-public">
             <a href="/" class="brand">Fit<span>Space</span></a>
             <div class="nav-links">
-                <a href="/creneaux">Nos créneaux</a>
+                <a href="/client/creneaux">Nos créneaux</a>
                 <a href="#">Tarifs</a>
                 <?php if (session()->get('user_id')): ?>
                     <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">
@@ -37,7 +37,7 @@
             <h1>Votre espace bien-être,<br><em>réservé en 30 secondes.</em></h1>
             <p>Cours collectifs, salles et terrains disponibles 7j/7. Créez un compte gratuit et réservez votre prochain créneau.</p>
             <div class="hero-ctas">
-                <a href="/creneaux" class="btn-hero btn-hero-primary">Voir les créneaux disponibles</a>
+                <a href="/client/creneaux" class="btn-hero btn-hero-primary">Voir les créneaux disponibles</a>
                 <?php if (!session()->get('user_id')): ?>
                     <a href="/register" class="btn-hero btn-hero-outline">Créer mon compte</a>
                 <?php endif; ?>
