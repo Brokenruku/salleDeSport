@@ -9,7 +9,7 @@ class AuthController extends BaseController
     public function login()
     {
         if (session()->get('user_id')) {
-            return redirect()->to('/creneaux');
+            return redirect()->to('/client/creneaux');
         }
         return view('auth/login');
     }
@@ -35,13 +35,13 @@ class AuthController extends BaseController
         if ($user['role'] === 'admin') {
             return redirect()->to('/admin/dashboard');
         }
-        return redirect()->to('/creneaux');
+        return redirect()->to('/client/creneaux');
     }
 
     public function register()
     {
         if (session()->get('user_id')) {
-            return redirect()->to('/creneaux');
+            return redirect()->to('/client/creneaux');
         }
         return view('auth/register');
     }

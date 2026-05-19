@@ -58,3 +58,25 @@
   </style>
 </head>
 <body>
+<nav class="nav-public">
+  <a href="/" class="brand">Fit<span>Space</span></a>
+  <div class="nav-links">
+    <?php if (session()->get('user_id')): ?>
+      <?php if (session()->get('user_role') === 'admin'): ?>
+        <a href="/admin/dashboard">Tableau de bord</a>
+        <a href="/admin/creneaux">Créneau</a>
+        <a href="/admin/reservations">Réservations</a>
+        <a href="/admin/ressources">Ressources</a>
+        <a href="/admin/clients">Clients</a>
+      <?php else: ?>
+        <a href="/client/dashboard">Tableau de bord</a>
+        <a href="/client/creneaux">Créneau</a>
+        <a href="/client/reservations">Mes réservations</a>
+      <?php endif; ?>
+      <a href="/logout" class="btn-nav-primary">Déconnexion</a>
+    <?php else: ?>
+      <a href="/login" class="btn-nav-primary">Connexion</a>
+    <?php endif; ?>
+  </div>
+</nav>
+

@@ -1,0 +1,108 @@
+CONTEXTE & THEME
+
+Salle de sport / centre de bien-etre — CI4 Sessions | Auth 2 roles | Relations
+
+Un client peut creer un compte, consulter les creneaux disponibles (cours, terrains, salles),
+effectuer une reservation et la gerer. Un administrateur supervise l'ensemble depuis un
+back-office dedie. Duree cible : 4h en binome.
+
+
+FONCTIONNALITES PAR ROLE
+
+Client (Role par defaut a l'inscription) :
+  [OBLIGATOIRE] Inscription (nom, email, mot de passe)
+  [OBLIGATOIRE] Connexion / deconnexion (session CI4)
+  [OBLIGATOIRE] Consulter les creneaux disponibles
+  [OBLIGATOIRE] Reserver un creneau (1 place = 1 reservation)
+  [ ] Voir ses reservations (tableau de bord)
+  [ ] Annuler une reservation en attente
+  [ ] Modifier son profil (nom, mot de passe)
+
+Administrateur (Acces back-office complet) :
+  [OBLIGATOIRE] Creer / modifier / supprimer des creneaux
+  [OBLIGATOIRE] Voir toutes les reservations (liste filtree)
+  [OBLIGATOIRE] Changer le statut d'une reservation (confirmer / refuser)
+  [ ] Gerer les types de ressources (salle, cours, terrain...)
+  [ ] Voir la liste des clients inscrits
+  [ ] Tableau de bord : stats rapides (reservations du jour, taux d'occupation)
+
+Ligne en gras = fonctionnalite obligatoire. Ligne normale = bonus si le temps le permet.
+
+
+SCHEMA DE BASE DE DONNEES (4 TABLES)
+
+users
+  id (PK)
+  nom
+  email
+  password
+  role (client/admin)
+  created_at
+
+ressources
+  id (PK)
+  nom
+  type
+  capacite
+  description
+
+creneaux
+  id (PK)
+  ressource_id (FK)
+  date_debut
+  date_fin
+  places_dispo
+  actif
+
+reservations
+  id (PK)
+  user_id (FK)
+  creneau_id (FK)
+  statut
+  created_at
+
+PK = cle primaire | FK = cle etrangere | statut : en_attente | confirmee | annulee | refusee
+
+
+FLUX PRINCIPAL — PARCOURS CLIENT
+
+  Inscription -> Connexion -> Voir creneaux -> Reserver -> Mes reservations -> Annuler
+
+
+DIRECTIVES TECHNIQUES CI4
+
+Authentification & securite :
+  - Session CI4 : session() — pas de bibliotheque externe
+  - Mot de passe hache avec password_hash()
+  - Filtre CI4 (AuthFilter) pour proteger les routes
+  - Verification du role dans chaque controller admin
+  - CSRF active sur tous les formulaires
+
+Modeles & donnees :
+  - 1 Model CI4 par table, avec regles de validation integrees
+  - Migrations CI4 pour creer les tables
+  - Seeders pour les donnees de test (3 creneaux, 1 admin)
+  - Requetes avec Query Builder uniquement — pas de SQL brut
+  - Verifier places_dispo > 0 avant d'inserer une reservation
+
+Vues & structure MVC :
+  - Layout partage : layout/header.php + footer.php
+  - Deux espaces /client/ et /admin/ dans les vues separes
+  - Flashdata CI4 pour les messages de succes / erreur
+  - Template Bootstrap 5 fourni a integrer dans le layout
+  - Aucun JavaScript metier — logique cote serveur uniquement
+
+Routing :
+  - Routes group('client') / group('admin') groupees par role
+  - Filtre applique au niveau du groupe dans Routes.php
+  - POST uniquement pour les actions d'ecriture (reserver, annuler, confirmer)
+  - Redirection apres chaque POST (pattern PRG)
+
+
+LIVRABLES ATTENDUS DES BINOMES
+
+  [ ] Code source complet (structure CI4 standard)
+  [ ] Migrations + Seeders fonctionnels (php spark migrate suffit)
+  [ ] Les 4 fonctionnalites obligatoires cote client operationnelles
+  [ ] Les 3 fonctionnalites obligatoires cote admin operationnelles
+  [ ] README court : instructions d'installation et compte admin de test

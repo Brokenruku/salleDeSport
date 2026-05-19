@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\RessourceModel;
 use App\Models\CreneauModel;
+use App\Models\ReservationModel;
 
 class IndexController extends BaseController
 {
@@ -12,11 +13,9 @@ class IndexController extends BaseController
         $ressourceModel = new RessourceModel();
         $creneauModel = new CreneauModel();
         
-        // Récupérer les données
         $total_creneaux_semaine = $creneauModel->countCreneauxSemaine();
         $total_types_ressources = $ressourceModel->getTypeCount();
         
-        // Passer les données à la vue
         $data = [
             'total_creneaux_semaine' => $total_creneaux_semaine,
             'total_types_ressources' => $total_types_ressources,
@@ -24,7 +23,20 @@ class IndexController extends BaseController
             'gratuit' => '100%'
         ];
         
-        // Retourner la vue avec les données
         return view('index', $data);
+    }
+
+    public function dashboard()
+    {
+        $creneauModel      = new CreneauModel();
+        $reservationModel  = new ReservationModel();
+        $userId            = session()->get('user_id');
+
+        $data = [
+            'total_creneaux'     => $creneauModel->where('actif', 1)->countAllResults(),
+            'user_reservations'  => $reservationModel->where('user_id', $userId)->countAllResults(),
+        ];
+
+        return view('client/dashboard', $data);
     }
 }

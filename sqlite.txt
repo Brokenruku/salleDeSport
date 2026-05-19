@@ -1,0 +1,158 @@
+POURQUOI SQLITE POUR CE PROJET ?
+
+Zero installation
+Pas de serveur MySQL/Postgres a demarrer. La BDD = un seul fichier.
+
+Portable
+On peut partager le fichier .db dans le zip du projet, avec les donnees deja chargees.
+
+Natif CI4
+CI4 supporte SQLite3 nativement via PDO. Aucune lib a installer.
+
+Query Builder intact
+Tout le code CI4 (Model, Query Builder, migrations) fonctionne sans changer une ligne.
+
+
+ETAPE 1 — VERIFIER QUE PDO SQLITE EST ACTIVE
+
+1 — Verifier l'extension PHP
+Dans le terminal, a la racine du projet :
+
+  $ php -m | grep -i sqlite
+  doit afficher "sqlite3" et "pdo_sqlite"
+
+- Si rien ne s'affiche, ouvrir php.ini et decommmenter extension=pdo_sqlite et extension=sqlite3. Redemarrer le serveur PHP.
+- Avec XAMPP/WAMP sur Windows, l'extension est souvent deja presente. Sur macOS avec Homebrew : brew install php l'inclut par defaut.
+
+
+ETAPE 2 — CONFIGURER DATABASE.PHP
+
+2 — Modifier app/Config/Database.php
+Remplacer la configuration MySQL/Postgres par defaut
+
+Avant (MySQL habituel) :
+  'DSN'      => '',
+  'hostname' => 'localhost',
+  'username' => 'root',
+  'password' => '',
+  'database' => 'fitspace',
+  'DBDriver' => 'MySQLi',
+  'DBPrefix' => '',
+  'port'     => 3306,
+
+Apres (SQLite) :
+  'DSN'      => '',
+  'hostname' => '',
+  'username' => '',
+  'password' => '',
+  'database' => WRITEPATH.'fitspace.db',
+  'DBDriver' => 'SQLite3',
+  'DBPrefix' => '',
+  'port'     => '',
+
+WRITEPATH est une constante CI4 qui pointe vers writable/. Le fichier fitspace.db sera cree automatiquement a la premiere migration.
+
+
+ETAPE 3 — MIGRATIONS : 2 SYNTAXES A CONNAITRE
+
+3 — Differences SQL a connaitre
+SQLite a quelques particularites par rapport a MySQL/Postgres
+
+MySQL / Postgres :
+  INT AUTO_INCREMENT
+  VARCHAR(255)
+  TINYINT(1)
+  ENUM('a','b','c')
+  NOW()
+
+SQLite (CI4 Forge) :
+  INTEGER (auto avec PK)
+  VARCHAR(255) identique
+  INTEGER (0 ou 1)
+  VARCHAR(20) + contrainte check
+  datetime (valeur PHP)
+
+Exemple de migration correcte pour la table users :
+
+  // app/Database/Migrations/2025-06-01-000001_CreateUsers.php
+  public function up(): void
+  {
+      $this->forge->addField([
+          'id'         => ['type' => 'INTEGER', 'auto_increment' => true],
+          'nom'        => ['type' => 'VARCHAR', 'constraint' => 100],
+          'email'      => ['type' => 'VARCHAR', 'constraint' => 150],
+          'password'   => ['type' => 'VARCHAR', 'constraint' => 255],
+          'role'       => ['type' => 'VARCHAR', 'constraint' => 10,
+                           'default' => 'client'],  // 'client' ou 'admin'
+          'created_at' => ['type' => 'DATETIME', 'null' => true],
+      ]);
+      $this->forge->addKey('id', true); // true = PRIMARY KEY
+      $this->forge->createTable('users');
+  }
+
+Cle etrangere dans reservations :
+
+  'user_id'    => ['type' => 'INTEGER'],
+  'creneau_id' => ['type' => 'INTEGER'],
+  'statut'     => ['type' => 'VARCHAR', 'constraint' => 15,
+                    'default' => 'en_attente'],
+
+  // Apres addField() :
+  $this->forge->addForeignKey('user_id',    'users',    'id');
+  $this->forge->addForeignKey('creneau_id', 'creneaux', 'id');
+
+SQLite ne verifie pas les FK par defaut. Ajouter PRAGMA foreign_keys = ON; dans le seeder ou via un event CI4 si la verification est necessaire en TD.
+
+
+ETAPE 4 — SEEDER : INSERER LES DONNEES DE TEST
+
+4 — Seeder avec donnees initiales
+app/Database/Seeds/FitspaceSeeder.php
+
+  public function run(): void
+  {
+      // Compte admin (mot de passe : admin123)
+      $this->db->table('users')->insert([
+          'nom'        => 'Administrateur',
+          'email'      => 'admin@fitspace.mg',
+          'password'   => password_hash('admin123', PASSWORD_DEFAULT),
+          'role'       => 'admin',
+          'created_at' => date('Y-m-d H:i:s'),
+      ]);
+
+      // Ressource de test
+      $this->db->table('ressources')->insert([
+          'nom'      => 'Salle Zen',
+          'type'     => 'cours',
+          'capacite' => 10,
+      ]);
+
+      // Creneau de test (date dynamique)
+      $this->db->table('creneaux')->insert([
+          'ressource_id' => 1,
+          'date_debut'   => date('Y-m-d', strtotime('+1 day')).' 08:00:00',
+          'date_fin'     => date('Y-m-d', strtotime('+1 day')).' 09:30:00',
+          'places_dispo' => 10,
+          'actif'        => 1,
+      ]);
+  }
+
+
+ETAPE 5 — LANCER L'INSTALLATION (3 COMMANDES)
+
+5 — Commandes a la racine du projet
+Ordre important a respecter
+
+  $ php spark migrate                      -> cree le fichier writable/fitspace.db et les tables
+  $ php spark db:seed FitspaceSeeder       -> insere admin + donnees de test
+  $ php spark serve                        -> demarre le serveur sur localhost:8080
+
+C'est tout. Pas de pgAdmin, pas de phpMyAdmin, pas de mot de passe serveur. Le projet tourne immediatement.
+
+
+RECAPITULATIF DES PIEGES COURANTS
+
+- Permissions : le dossier writable/ doit etre accessible en ecriture par le serveur web. Sous Linux : chmod -R 777 writable/
+- ALTER TABLE : SQLite ne supporte pas ALTER TABLE ... DROP COLUMN avant SQLite 3.35. Toujours passer par une nouvelle migration, jamais modifier une migration existante.
+- ENUM inexistant : utiliser VARCHAR avec des valeurs controlees cote PHP. Ne pas ecrire ENUM('client','admin') dans les migrations.
+- Remettre a zero : pour repartir de zero, supprimer le fichier writable/fitspace.db et relancer php spark migrate. Equivalent du DROP DATABASE.
